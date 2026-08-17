@@ -896,7 +896,7 @@ local infoSec = InfoTab:Section({ Title = "Script Information" })
 
 infoSec:Button({
     Title = "Script: Elaina X Hub",
-    Desc = "Game: Evade Legacy | Developer: Darnyx",
+    Desc = "Game: Evade Legacy | Developer: Darnyx,Supporter:AzureX",
     Callback = function() end
 })
 
