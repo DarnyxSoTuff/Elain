@@ -889,16 +889,23 @@ local VisualTab = Window:Tab({ Title = "Visual", Icon = "eye" })
 local InfoTab = Window:Tab({ Title = "Info", Icon = "info" })
 local ConfigTab = Window:Tab({ Title = "Config", Icon = "settings" })
 local MoreTab = Window:Tab({ Title = "More", Icon = "list" })
+-- ---- CONFIG ----
+local cfg = ConfigTab:Section({ Title = "Button Size" })
+cfg:Input({ Title = "Fly Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.Fly = (tonumber(v) or 0) * 0.01 end })
+cfg:Input({ Title = "BHOP Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.BHOP = (tonumber(v) or 0) * 0.01 end })
+cfg:Input({ Title = "Gravity Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.Gravity = (tonumber(v) or 0) * 0.01 end })
+cfg:Input({ Title = "Lag Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.LagSwitch = (tonumber(v) or 0) * 0.01 end })
+cfg:Input({ Title = "Bounce Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.Bounce = (tonumber(v) or 0) * 0.01 end })
 -- ==========================================
 -- MORE TAB
 -- ==========================================
-local MoreSection = MoreTab:Section({ Title = "Tiện Ích" })
+local MoreSection = MoreTab:Section({ Title = "More..." })
 
 MoreSection:Button({
     Title = "Fix lag",
-    Desc = "Tối ưu hóa hiệu suất và giảm lag cho game",
+    Desc = "This cant turn off if you turn it on",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/marianscriptKing/SUPER-MAX.lau/main/SUPER%20MAX%20PERFORMANCE"))()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Fix-lag-all-game-24449"))()
     end
 })
 
@@ -1257,25 +1264,6 @@ inf:Paragraph({ Title = "Elaina Hub X", Desc = "Created by Darnyx" })
 inf:Paragraph({ Title = "Adjustments / Movement / ESP", Desc = "Created by Darnyx" })
 inf:Button({ Title = "Darnyx'tiktok", Callback = function() setclipboard("https://www.tiktok.com/@darnyx_love_elaina") end })
 inf:Paragraph({ Title = "UI: WindUI", Desc = "Created by Footagesus" })
-
--- ---- CONFIG ----
-local cfg = ConfigTab:Section({ Title = "Button Size" })
-cfg:Input({ Title = "Fly Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.Fly = (tonumber(v) or 0) * 0.01 end })
-cfg:Input({ Title = "BHOP Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.BHOP = (tonumber(v) or 0) * 0.01 end })
-cfg:Input({ Title = "Gravity Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.Gravity = (tonumber(v) or 0) * 0.01 end })
-cfg:Input({ Title = "Lag Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.LagSwitch = (tonumber(v) or 0) * 0.01 end })
-cfg:Input({ Title = "Bounce Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.Bounce = (tonumber(v) or 0) * 0.01 end })
-
-MoreSection:Button({
-    Title = "Still in Process",
-    Desc = "Tính năng này đang được phát triển...",
-    Callback = function()
-        
-    end
-})
-
-
-
 
 -- Shaders
 local sh = ExtensionTab:Section({ Title = "Shaders" })
