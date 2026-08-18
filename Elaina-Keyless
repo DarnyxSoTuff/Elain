@@ -889,7 +889,26 @@ local VisualTab = Window:Tab({ Title = "Visual", Icon = "eye" })
 local InfoTab = Window:Tab({ Title = "Info", Icon = "info" })
 local ConfigTab = Window:Tab({ Title = "Config", Icon = "settings" })
 local MoreTab = Window:Tab({ Title = "More", Icon = "list" })
+-- ==========================================
+-- MORE TAB
+-- ==========================================
+local MoreSection = MoreTab:Section({ Title = "Tiện Ích" })
 
+MoreSection:Button({
+    Title = "Fix lag",
+    Desc = "Tối ưu hóa hiệu suất và giảm lag cho game",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/marianscriptKing/SUPER-MAX.lau/main/SUPER%20MAX%20PERFORMANCE"))()
+    end
+})
+
+MoreSection:Button({
+    Title = "Still in Process",
+    Desc = "Tính năng này đang được phát triển...",
+    Callback = function()
+        -- Để trống
+    end
+})
 -- Them noi dung hien thi cho InfoTab
 local infoSec = InfoTab:Section({ Title = "Script Information" })
 
@@ -1246,28 +1265,6 @@ cfg:Input({ Title = "BHOP Size", Placeholder = "0", Callback = function(v) DConf
 cfg:Input({ Title = "Gravity Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.Gravity = (tonumber(v) or 0) * 0.01 end })
 cfg:Input({ Title = "Lag Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.LagSwitch = (tonumber(v) or 0) * 0.01 end })
 cfg:Input({ Title = "Bounce Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.Bounce = (tonumber(v) or 0) * 0.01 end })
-
--- ==========================================
--- MORE TAB
--- ==========================================
-local MoreSection = MoreTab:Section({ Title = "Tiện Ích" })
-
-MoreSection:Button({
-    Title = "Fix lag",
-    Desc = "Tối ưu hóa hiệu suất và giảm lag cho game",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/marianscriptKing/SUPER-MAX.lau/main/SUPER%20MAX%20PERFORMANCE"))()
-    end
-})
-
-MoreSection:Button({
-    Title = "Still in Process",
-    Desc = "Tính năng này đang được phát triển...",
-    Callback = function()
-        -- Để trống
-    end
-})
-
 
 MoreSection:Button({
     Title = "Still in Process",
