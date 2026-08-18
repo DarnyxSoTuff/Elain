@@ -888,7 +888,7 @@ local MovementTab = Window:Tab({ Title = "Movement", Icon = "walk" })
 local VisualTab = Window:Tab({ Title = "Visual", Icon = "eye" })
 local InfoTab = Window:Tab({ Title = "Info", Icon = "info" })
 local ConfigTab = Window:Tab({ Title = "Config", Icon = "settings" })
-local ExtensionTab = Window:Tab({ Title = "Extension", Icon = "box" })
+local MoreTab = Window:Tab({ Title = "More", Icon = "list" })
 
 -- Them noi dung hien thi cho InfoTab
 local infoSec = InfoTab:Section({ Title = "Script Information" })
@@ -1247,18 +1247,27 @@ cfg:Input({ Title = "Gravity Size", Placeholder = "0", Callback = function(v) DC
 cfg:Input({ Title = "Lag Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.LagSwitch = (tonumber(v) or 0) * 0.01 end })
 cfg:Input({ Title = "Bounce Size", Placeholder = "0", Callback = function(v) DConfiguration.Settings.GuiScale.Bounce = (tonumber(v) or 0) * 0.01 end })
 
------ EXTENSION -----
-local ext = ExtensionTab:Section({ Title = "Character Extension" })
-ext:Toggle({ Title = "Korblox (Right)", Default = false, Callback = function(s) _G.KorbloxR = s checkAndApplyAll() end })
-ext:Toggle({ Title = "Korblox (Left)", Default = false, Callback = function(s) _G.KorbloxL = s checkAndApplyAll() end })
-ext:Toggle({ Title = "Headless", Default = false, Callback = function(s) _G.Headless = s checkAndApplyAll() end })
-ext:Toggle({ Title = "Remove Accessories", Default = false, Callback = function(s) _G.DeleteHats = s checkAndApplyAll() end })
-ext:Toggle({ Title = "Angelic Wings", Default = false, Callback = function(s) _G.ExtStates.Wings = s _G.ApplySingleExt(192557913, "Wings_Acc", s) end })
-ext:Toggle({ Title = "Poisonous Horns", Default = false, Callback = function(s) _G.ExtStates.Poison = s _G.ApplySingleExt(1744060292, "Poison_Acc", s) end })
-ext:Toggle({ Title = "Frozen Horn", Default = false, Callback = function(s) _G.ExtStates.Frozen = s _G.ApplySingleExt(74891470, "Frozen_Acc", s) end })
-ext:Toggle({ Title = "Fire Horn", Default = false, Callback = function(s) _G.ExtStates.Fire = s _G.ApplySingleExt(215718515, "Fire_Acc", s) end })
-ext:Toggle({ Title = "Doomsekkar", Default = false, Callback = function(s) _G.ExtStates.Doomsekkar = s _G.ApplySingleExt(132809431, "Doomsekkar_Acc", s) end })
-ext:Button({ Title = "Avatar Changer", Callback = function() loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-client-avatar-changer-92130"))() end })
+-- ==========================================
+-- MORE TAB
+-- ==========================================
+local MoreSection = MoreTab:Section({ Title = "Tiện Ích (Utilities)" })
+
+MoreSection:Button({
+    Title = "Fix lag",
+    Desc = "Tối ưu hóa hiệu suất và giảm lag cho game",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/marianscriptKing/SUPER-MAX.lau/main/SUPER%20MAX%20PERFORMANCE"))()
+    end
+})
+
+MoreSection:Button({
+    Title = "Still in Process",
+    Desc = "Tính năng này đang được phát triển...",
+    Callback = function()
+        
+    end
+})
+
 
 
 
