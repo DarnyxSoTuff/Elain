@@ -877,9 +877,10 @@ local Window = WindUI:CreateWindow({
 -- Nút mở menu chính chủ có hình Elaina (Kéo rê / Drag thoải mái)
 Window:EditOpenButton({
     Title = "Elaina Hub",
-    Icon = "rbxassetid://135881675867670",
-    Enabled = true
-})
+          Icon = "rbxassetid://135881675867670",
+        Keybind = Enum.KeyCode.B,
+        Enabled = true
+    })
 
 
 local MainTab = Window:Tab({ Title = "Main", Icon = "house" })
@@ -1469,3 +1470,49 @@ task.spawn(function()
         end
     end
 end)
+-- ==========================================
+-- ÉP HIỆN ICON NỔI TRÊN PC (ĐÃ LỌC MOBILE)
+-- ==========================================
+local UserInputService = game:GetService("UserInputService")
+
+-- Kiểm tra xem người dùng đang xài điện thoại hay PC
+-- (Nếu có cảm ứng và không có bàn phím vật lý -> Đích thị là Mobile)
+local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+
+-- CHỈ KHI LÀ PC THÌ MỚI CHẠY ĐOẠN TẠO ICON NÀY:
+if not isMobile then
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "PCToggleIcon"
+    ScreenGui.ResetOnSpawn = false
+
+    -- Gắn vào CoreGui để không bị mất khi chết (reset nhân vật)
+    pcall(function() ScreenGui.Parent = game:GetService("CoreGui") end)
+
+    local ToggleBtn = Instance.new("ImageButton")
+    ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
+    ToggleBtn.Position = UDim2.new(0.1, 0, 0.1, 0) -- Vị trí xuất hiện ban đầu
+    ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    ToggleBtn.Image = "rbxassetid://135881675867670" -- Ảnh Elaina
+    ToggleBtn.Active = true
+    ToggleBtn.Draggable = true -- Có thể kéo thả thoải mái
+    ToggleBtn.Parent = ScreenGui
+
+    -- Bo tròn góc (thành hình tròn luôn)
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(1, 0) 
+    UICorner.Parent = ToggleBtn
+
+    -- Viền tím cho đẹp
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = Color3.fromRGB(130, 90, 255)
+    UIStroke.Thickness = 2
+    UIStroke.Parent = ToggleBtn
+
+    -- Giả lập bấm phím B khi click vào icon
+    ToggleBtn.MouseButton1Click:Connect(function()
+        local vim = game:GetService("VirtualInputManager")
+        vim:SendKeyEvent(true, Enum.KeyCode.B, false, game)
+        task.wait(0.05)
+        vim:SendKeyEvent(false, Enum.KeyCode.B, false, game)
+    end)
+end
