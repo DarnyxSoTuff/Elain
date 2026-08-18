@@ -1250,7 +1250,7 @@ cfg:Input({ Title = "Bounce Size", Placeholder = "0", Callback = function(v) DCo
 -- ==========================================
 -- MORE TAB
 -- ==========================================
-local MoreSection = MoreTab:Section({ Title = "Tiện Ích (Utilities)" })
+local MoreSection = MoreTab:Section({ Title = "Tiện Ích" })
 
 MoreSection:Button({
     Title = "Fix lag",
@@ -1259,6 +1259,15 @@ MoreSection:Button({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/marianscriptKing/SUPER-MAX.lau/main/SUPER%20MAX%20PERFORMANCE"))()
     end
 })
+
+MoreSection:Button({
+    Title = "Still in Process",
+    Desc = "Tính năng này đang được phát triển...",
+    Callback = function()
+        -- Để trống
+    end
+})
+
 
 MoreSection:Button({
     Title = "Still in Process",
