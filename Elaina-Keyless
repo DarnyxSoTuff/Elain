@@ -68,6 +68,19 @@ DConfiguration = {
             AggressiveEmoteDash = { Enabled = false, Type = "Blatant", Speed = 2000, Acceleration = -2 },
             ModifyEmote = { Enabled = false, TurnSpeed = 0.5 },
             Gravity = { Value = 10 },
+            BHOP = {
+                Type = "Acceleration",
+                Acceleration = -0.1,
+                AutoAcceleration = false,
+                MaxSpeed = 70,
+                lastTick = 0,
+            },
+        },
+    },
+    Settings = {
+        GuiScale = { Fly = 0, BHOP = 0, Gravity = 0, LagSwitch = 0, Bounce = 0 },
+    },
+}
 
 -- =====================================================================
 -- 4. HÀM ESP (GIỮ NGUYÊN)
@@ -280,6 +293,40 @@ function DFunctions.BounceFunction()
         end
     end
 end
+
+function DFunctions.SprintEmoteDash()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    if DConfiguration.Misc.MovementModification.AggressiveEmoteDash.Type == "Legit" and (char and char:GetAttribute("Emoting") == true and char:GetAttribute("Crouching") == true) then
+        DConfiguration.Misc.PlayerAdjustment.Update.GroundAcceleration = DConfiguration.Misc.MovementModification.AggressiveEmoteDash.Acceleration
+    else
+        DConfiguration.Misc.PlayerAdjustment.Update.GroundAcceleration = 1
+    end
+    if DConfiguration.Misc.MovementModification.AggressiveEmoteDash.Type == "Blatant" and (char and char:GetAttribute("Emoting") == true) then
+        DConfiguration.Misc.PlayerAdjustment.Update.Speed = DConfiguration.Misc.MovementModification.AggressiveEmoteDash.Speed
+    else
+        DConfiguration.Misc.PlayerAdjustment.Update.Speed = 1500
+    end
+end
+
+function DFunctions.BHOPFunction()
+    local char = LocalPlayer.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    if not char or not hrp or not hum then return end
+    if not _G.BHOP then return end
+    local speed = char:GetAttribute("CurrentMoveSpeed") or 0
+    local debounce = 0.01
+    if DConfiguration.Misc.MovementModification.BHOP.Type == "Acceleration" then
+        hum.HipHeight = -1.05
+    elseif DConfiguration.Misc.MovementModification.BHOP.Type == "Ground Acceleration" then
+        hum.HipHeight = -2
+    else
+        debounce = 0.125
+    end
+    if DConfiguration.Misc.MovementModification.BHOP.AutoAcceleration then
+        local dec = math.clamp(1 - (speed / 70 * 1.7), 0.01, 0.8)
+        DConfiguration.Misc.PlayerAdjustment.Update.GroundAcceleration = speed < 70 and DConfiguration.Misc.MovementModification.BHOP.Acceleration or dec
+    else
         DConfiguration.Misc.PlayerAdjustment.Update.GroundAcceleration = DConfiguration.Misc.MovementModification.BHOP.Acceleration
     end
     local now = tick()
@@ -288,6 +335,15 @@ end
             hum:ChangeState(Enum.HumanoidStateType.Jumping)
             DConfiguration.Misc.MovementModification.BHOP.lastTick = now
         end
+    end
+end
+
+function DFunctions.ResetBHOP()
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        hum.HipHeight = -1.25
+        DConfiguration.Misc.PlayerAdjustment.Update.GroundAcceleration = 1
     end
 end
 
@@ -1016,12 +1072,37 @@ n1:Dropdown({ Title = "Teleport Type", Items = {"Spawn","Players"}, Default = "S
 n1:Input({ Title = "Distance", Placeholder = "15", Callback = function(v) DConfiguration.Nextbots.AntiNextbotRange = tonumber(v) or 15 end })
 
 -- ---- MOVEMENT ----
-local mv1 = MovementTab:Section({ Title = "Player Adjustments (Not Working)" })
+local mv1 = MovementTab:Section({ Title = "Player Adjustments" })
 mv1:Input({ Title = "Speed", Placeholder = "1500", Callback = function(v) DConfiguration.Misc.PlayerAdjustment.Update.Speed = tonumber(v) or 1500 end })
 mv1:Input({ Title = "Jump", Placeholder = "3", Callback = function(v) DConfiguration.Misc.PlayerAdjustment.Update.JumpHeight = tonumber(v) or 3 end })
 mv1:Input({ Title = "Strafe Acceleration", Placeholder = "182", Callback = function(v) DConfiguration.Misc.PlayerAdjustment.Update.AirStrafe = tonumber(v) or 182 end })
 mv1:Toggle({ Title = "Walkspeed CF", Default = false, Callback = function(s) DConfiguration.Misc.Humanoids.WalkspeedCF = s end })
 mv1:Input({ Title = "Walkspeed Value", Placeholder = "5", Callback = function(v) DConfiguration.Misc.Humanoids.CF = tonumber(v) or 5 end })
+
+-- BHOP
+local bh = MovementTab:Section({ Title = "BHOP" })
+
+-- Khởi tạo biến của bạn (mặc định tắt)
+_G.AutoJump = false
+
+bh:Toggle({
+    Title = "Auto Jump",
+    Desc = "Not for use now,pls use auto bounce set all to 1",
+    Value = false,
+    Callback = function(Value)
+        -- Liên kết nút gạt với biến _G.AutoJump của bạn
+        _G.AutoJump = Value
+    end
+})
+
+-- Emote Dash
+local ed = MovementTab:Section({ Title = "Emote Dash" })
+ed:Toggle({ Title = "Aggressive Emote Dash", Default = false, Callback = function(s) DConfiguration.Misc.MovementModification.AggressiveEmoteDash.Enabled = s end })
+ed:Dropdown({ Title = "Emote Type", Items = {"Legit","Blatant"}, Default = "Blatant", Callback = function(v) DConfiguration.Misc.MovementModification.AggressiveEmoteDash.Type = v end })
+ed:Input({ Title = "Emote Speed", Placeholder = "2000", Callback = function(v) DConfiguration.Misc.MovementModification.AggressiveEmoteDash.Speed = tonumber(v) or 2000 end })
+ed:Input({ Title = "Emote Acceleration (Negative)", Placeholder = "-2", Callback = function(v) DConfiguration.Misc.MovementModification.AggressiveEmoteDash.Acceleration = tonumber(v) or -2 end })
+ed:Toggle({ Title = "Modify Emote Rotation", Default = false, Callback = function(s) DConfiguration.Misc.MovementModification.ModifyEmote.Enabled = s end })
+ed:Input({ Title = "Rotation Speed", Placeholder = "0.5", Callback = function(v) DConfiguration.Misc.MovementModification.ModifyEmote.TurnSpeed = tonumber(v) or 0.5 end })
 
 -- Gravity
 local gr = MovementTab:Section({ Title = "Gravity" })
@@ -1366,5 +1447,72 @@ WindUI:Notify({
     Content = "Elaina X Hub - Đầy đủ chức năng",
     Duration = 3,
 })
+-- MÁY CHỦ AUTO JUMP (BYPASS EVADE)
+task.spawn(function()
+    local vim = game:GetService("VirtualInputManager")
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
 
+    while task.wait() do
+        if _G.AutoJump then
+            local char = LocalPlayer.Character
+            if char then
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                -- Kiểm tra nếu đang sống và chân đang chạm đất
+                if hum and hum.Health > 0 and hum.FloorMaterial ~= Enum.Material.Air then
+                    -- Ép hệ thống tự bấm phím Space liên tục
+                    vim:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
+                    task.wait(0.01)
+                    vim:SendKeyEvent(false, Enum.KeyCode.Space, false, game)
+                    task.wait(0.1) -- Nghỉ một nhịp nhỏ để game kịp phản hồi
+                end
+            end
+        end
+    end
+end)
+-- ==========================================
+-- ÉP HIỆN ICON NỔI TRÊN PC (ĐÃ LỌC MOBILE)
+-- ==========================================
+local UserInputService = game:GetService("UserInputService")
 
+-- Kiểm tra xem người dùng đang xài điện thoại hay PC
+-- (Nếu có cảm ứng và không có bàn phím vật lý -> Đích thị là Mobile)
+local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+
+-- CHỈ KHI LÀ PC THÌ MỚI CHẠY ĐOẠN TẠO ICON NÀY:
+if not isMobile then
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "PCToggleIcon"
+    ScreenGui.ResetOnSpawn = false
+
+    -- Gắn vào CoreGui để không bị mất khi chết (reset nhân vật)
+    pcall(function() ScreenGui.Parent = game:GetService("CoreGui") end)
+
+    local ToggleBtn = Instance.new("ImageButton")
+    ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
+    ToggleBtn.Position = UDim2.new(0.1, 0, 0.1, 0) -- Vị trí xuất hiện ban đầu
+    ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    ToggleBtn.Image = "rbxassetid://135881675867670" -- Ảnh Elaina
+    ToggleBtn.Active = true
+    ToggleBtn.Draggable = true -- Có thể kéo thả thoải mái
+    ToggleBtn.Parent = ScreenGui
+
+    -- Bo tròn góc (thành hình tròn luôn)
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(1, 0) 
+    UICorner.Parent = ToggleBtn
+
+    -- Viền tím cho đẹp
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Color = Color3.fromRGB(130, 90, 255)
+    UIStroke.Thickness = 2
+    UIStroke.Parent = ToggleBtn
+
+    -- Giả lập bấm phím B khi click vào icon
+    ToggleBtn.MouseButton1Click:Connect(function()
+        local vim = game:GetService("VirtualInputManager")
+        vim:SendKeyEvent(true, Enum.KeyCode.B, false, game)
+        task.wait(0.05)
+        vim:SendKeyEvent(false, Enum.KeyCode.B, false, game)
+    end)
+end
