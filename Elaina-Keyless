@@ -1366,27 +1366,5 @@ WindUI:Notify({
     Content = "Elaina X Hub - Đầy đủ chức năng",
     Duration = 3,
 })
--- MÁY CHỦ AUTO JUMP (BYPASS EVADE)
-task.spawn(function()
-    local vim = game:GetService("VirtualInputManager")
-    local Players = game:GetService("Players")
-    local LocalPlayer = Players.LocalPlayer
 
-    while task.wait() do
-        if _G.AutoJump then
-            local char = LocalPlayer.Character
-            if char then
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                -- Kiểm tra nếu đang sống và chân đang chạm đất
-                if hum and hum.Health > 0 and hum.FloorMaterial ~= Enum.Material.Air then
-                    -- Ép hệ thống tự bấm phím Space liên tục
-                    vim:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
-                    task.wait(0.01)
-                    vim:SendKeyEvent(false, Enum.KeyCode.Space, false, game)
-                    task.wait(0.1) -- Nghỉ một nhịp nhỏ để game kịp phản hồi
-                end
-            end
-        end
-    end
-end)
 
