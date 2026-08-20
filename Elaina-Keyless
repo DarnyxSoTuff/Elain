@@ -1072,7 +1072,7 @@ n1:Dropdown({ Title = "Teleport Type", Items = {"Spawn","Players"}, Default = "S
 n1:Input({ Title = "Distance", Placeholder = "15", Callback = function(v) DConfiguration.Nextbots.AntiNextbotRange = tonumber(v) or 15 end })
 
 -- ---- MOVEMENT ----
-local mv1 = MovementTab:Section({ Title = "Player Adjustments" })
+local mv1 = MovementTab:Section({ Title = "Player Adjustments (Not Working)" })
 mv1:Input({ Title = "Speed", Placeholder = "1500", Callback = function(v) DConfiguration.Misc.PlayerAdjustment.Update.Speed = tonumber(v) or 1500 end })
 mv1:Input({ Title = "Jump", Placeholder = "3", Callback = function(v) DConfiguration.Misc.PlayerAdjustment.Update.JumpHeight = tonumber(v) or 3 end })
 mv1:Input({ Title = "Strafe Acceleration", Placeholder = "182", Callback = function(v) DConfiguration.Misc.PlayerAdjustment.Update.AirStrafe = tonumber(v) or 182 end })
@@ -1080,20 +1080,41 @@ mv1:Toggle({ Title = "Walkspeed CF", Default = false, Callback = function(s) DCo
 mv1:Input({ Title = "Walkspeed Value", Placeholder = "5", Callback = function(v) DConfiguration.Misc.Humanoids.CF = tonumber(v) or 5 end })
 
 -- BHOP
-local bh = MovementTab:Section({ Title = "BHOP" })
+local JumpSec = MovementTab:Section({ Title = "Auto Jump" })
 
--- Khởi tạo biến của bạn (mặc định tắt)
-_G.AutoJump = false
+-- Biến lưu trạng thái script Auto Jump ngoài
+local loadedAutoJump = nil
 
-bh:Toggle({
-    Title = "Auto Jump",
-    Desc = "Not for use now,pls use auto bounce set all to 1",
-    Value = false,
-    Callback = function(Value)
-        -- Liên kết nút gạt với biến _G.AutoJump của bạn
-        _G.AutoJump = Value
-    end
+JumpSec:Toggle({
+    Title = "Enable Auto Jump",
+    Default = false,
+    Callback = function(v)
+        -- Lưu trạng thái vào cấu hình nếu cần
+        DConfiguration.Misc.AutoJump.Enabled = v
+        
+        if v then
+            -- Khi bật Toggle: Tải và chạy script từ Pastebin của bạn
+            local success, err = pcall(function()
+                if not loadedAutoJump then
+                    -- Loadstring script từ Pastebin bạn cung cấp
+                    loadedAutoJump = loadstring(game:HttpGet("https://pastebin.com/raw/JXgMQDq0"))()
+                else
+                    -- Nếu đã load trước đó rồi thì kích hoạt lại (tùy thuộc vào code trong Pastebin viết gì)
+                    if type(loadedAutoJump) == "function" then
+                        loadedAutoJump()
+                    end
+                end
+            end)
+            if not success then
+                warn("Lỗi chạy Auto Jump Pastebin: " .. tostring(err))
+            end
+        else
+            -- Khi tắt Toggle: Bạn có thể thêm logic ngắt ở đây nếu script Pastebin hỗ trợ
+            -- Hoặc để trống nếu script tự dừng khi set flag
+        end
+    end)
 })
+
 
 -- Emote Dash
 local ed = MovementTab:Section({ Title = "Emote Dash" })
